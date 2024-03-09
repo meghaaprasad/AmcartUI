@@ -20,6 +20,6 @@ phases:
       - echo Uploading build artifacts to S3 Bucket...
 artifacts:
   files:
-    - '**/*'
+    - 'dist/**/*'
   base-directory: 'dist'
   discard-paths: yes
