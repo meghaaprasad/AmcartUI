@@ -18,8 +18,10 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Uploading build artifacts to S3 Bucket...
+      - aws s3 cp dist s3://amcart-ui/ --recursive
+
 artifacts:
   files:
-    - 'dist/**/*'
+    - '**/*'
   base-directory: 'dist'
   discard-paths: yes
