@@ -1,11 +1,20 @@
 <template>
-    <div class="product-details-container">
-      <!-- Product Image -->
+  <div>
+    <!-- Error message if the product fails to load -->
+    <div v-if="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <!-- Loading message while the product is being fetched -->
+    <div v-else-if="loading" class="loading-message">
+      Loading product details...
+    </div>
+
+    <!-- Product details once the product has loaded -->
+    <div v-else class="product-details-container">
       <div class="product-image">
         <img :src="`/images/${product.imageUrl}`" :alt="product.name">
       </div>
-  
-      <!-- Product Info -->
       <div class="product-info">
         <h1>{{ product.name }}</h1>
         <div class="product-rating">
@@ -27,37 +36,57 @@
         <button class="wishlist-btn">WISHLIST</button>
       </div>
     </div>
-  </template>
-  
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        product: null,
-      };
-    },
-    methods: {
-      fetchProductDetails() {
-        const productId = this.$route.params.id;
-        console.log('calling fetchProductDetails');
-        axios.get(`http://localhost:5001/api/Products/${productId}`) // Update the URL to match your API
-          .then(response => {
-            console.log(response.data);
-            this.product = response.data;
-          })
-          .catch(error => {
-            console.error("There was an error fetching the product details: ", error);
-          });
-      }
-    },
-    created() {
-      this.fetchProductDetails();
-    },
-  };
-  </script>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      product: {
+        imageUrl: '',
+        name: 'Loading...',
+        rating: {
+          value: 0,
+          count: 0
+        },
+        price: {
+          currency: '',
+          final: 0,
+          original: 0,
+          discountPercentage: 0
+        },
+        // Assuming you might have sizes; if not, remove this
+        sizes: []
+      },
+      loading: true,
+      error: null
+    };
+  },
+  methods: {
+    fetchProductDetails() {
+      const productId = this.$route.params.id;
+      this.loading = true;
+      this.error = null;
+      axios.get(`http://localhost:5001/api/Products/${productId}`)
+        .then(response => {
+          this.product = response.data;
+          this.loading = false;
+        })
+        .catch(error => {
+          console.error("There was an error fetching the product details: ", error);
+          this.error = 'Failed to load product details.';
+          this.loading = false;
+        });
+    }
+  },
+  created() {
+    this.fetchProductDetails();
+  },
+};
+</script>
 
 <style scoped>
 .product-details-container {

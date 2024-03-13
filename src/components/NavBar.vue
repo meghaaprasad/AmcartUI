@@ -1,21 +1,22 @@
 <template>
   <nav class="navbar">
-    <div class="logo">AmCart</div>
-    <ul class="nav-links">
-      <li><a href="#">MEN</a></li>
-      <li><a href="#">WOMEN</a></li>
-      <li><a href="#">KIDS</a></li>
-    </ul>
-    <div class="search-bar">
-      <input type="text" placeholder="Search for products, brands and more">
+    <router-link to="/" class="logo">AmCart</router-link>
+    <div class="search-container">
+      <input type="text" placeholder="Search for products, brands and more" class="search-input" />
+      <button class="search-button">🔍</button>
     </div>
+    <ul class="nav-links">
+      <li @click="filterByCategory('Men')">MEN</li>
+      <li @click="filterByCategory('Women')">WOMEN</li>
+      <li @click="filterByCategory('Kids')">KIDS</li>
+    </ul>
     <div class="nav-right">
       <ul v-if="isLoggedIn" class="nav-icons">
         <li>
-          <a href="#" @mouseover="showUsername = true" @mouseleave="showUsername = false">
-            <i class="profile-icon">Profile</i>
+          <router-link to="/profile">
+            <i class="profile-icon">{{ username.substring(0, 1) }}</i>
             <span v-show="showUsername">{{ username }}</span>
-          </a>
+          </router-link>
         </li>
         <li><a href="#" @click="logout">Logout</a></li>
       </ul>
@@ -23,8 +24,8 @@
         <li><a href="#" @click="loginWithCognito">Login</a></li>
       </ul>
       <ul class="nav-icons">
-        <li><a href="#">Wishlist</a></li>
-        <li><a href="#">Bag</a></li>
+        <li><router-link to="/wishlist">Wishlist</router-link></li>
+        <li><router-link to="/bag">Bag</router-link></li>
       </ul>
     </div>
   </nav>
@@ -33,25 +34,31 @@
 <script>
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'NavBar',
   setup() {
     const store = useStore();
     const showUsername = ref(false);
+    const router = useRouter();
     const username = computed(() => store.getters.username);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
 
     const logout = () => {
       store.dispatch('logout');
-      // Add redirect or additional actions upon logout if needed
+      router.push('/');
     };
 
     const loginWithCognito = () => {
-      window.location.href = 'http://localhost:5005/api/Auth/login';
+      window.location.href = 'http://your-authentication-endpoint';
     };
 
-    return { showUsername, username, isLoggedIn, logout, loginWithCognito };
+    const filterByCategory = (category) => {
+      router.push({ name: 'Products', query: { category: category } });
+    };
+
+    return { showUsername, username, isLoggedIn, logout, loginWithCognito, filterByCategory };
   },
 };
 </script>
@@ -61,37 +68,52 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 50px;
-  background-color: #fff;
+  padding: 0.5rem 1rem;
+  background-color: #131921;
 }
 
 .logo {
-  font-size: 2em;
-  color: #FF3E6C;
-}
-
-.nav-links,
-.nav-right {
-  display: flex;
-}
-
-.nav-links li,
-.nav-icons li {
-  margin: 0 15px;
-}
-
-.nav-links a,
-.nav-icons a {
+  font-size: 1.5rem;
+  color: #FF9900;
   text-decoration: none;
-  color: #000;
-  font-weight: 500;
 }
 
-.search-bar input {
-  padding: 5px;
-  border: 1px solid #ccc;
-  width: 100%;
-  max-width: 300px; /* Adjust based on your layout */
+.search-container {
+  display: flex;
+  flex-grow: 1;
+  margin: 0 1rem;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.search-button {
+  background-color: #febd69;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  padding: 0 1rem;
+  cursor: pointer;
+  color: white;
+}
+
+.nav-links li:hover {
+  text-decoration: underline;
 }
 
 .nav-right {
@@ -100,75 +122,23 @@ export default {
 }
 
 .nav-icons {
-  display: flex;
   list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-icons li {
-  position: relative;
+  padding: 0 0.5rem;
 }
 
-.nav-icons a span {
-  position: absolute;
-  visibility: hidden;
-  background-color: black;
-  color: white;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-}
-
-.nav-icons a:hover span {
-  visibility: visible;
-}
-
-
-<style scoped>
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1rem; /* Reduced padding */
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-}
-
-.logo {
-  font-size: 1.5em; /* Adjusted for proportion */
-  color: #FF3E6C; /* Your brand color */
-}
-
-.nav-links,
-.nav-right {
-  display: flex;
-  align-items: center; /* Center items vertically */
-}
-
-.nav-links li,
-.nav-icons li {
-  margin: 0 1rem; /* Uniform margin */
-}
-
-.nav-links a,
 .nav-icons a {
+  color: white;
   text-decoration: none;
-  color: #333; /* Darker text for better readability */
-  font-weight: 500;
 }
 
-.search-bar {
-  flex-grow: 1; /* Allow search bar to take up remaining space */
-  margin: 0 1rem; /* Add margin around the search bar */
-}
-
-.search-bar input {
-  width: 100%; /* Full width of parent */
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px; /* Rounded corners */
+.profile-icon {
+  font-weight: bold;
+  cursor: pointer;
 }
 </style>

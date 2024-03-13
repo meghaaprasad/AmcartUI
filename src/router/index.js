@@ -5,14 +5,15 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginComponent from '@/views/LoginComponent.vue';
 import CallbackComponent from '@/components/CallbackComponent.vue';
 import ProductDetailComponent from '@/components/ProductDetails.vue';
+import Products from '@/components/ProductDisplay.vue';
 
 // Define routes
 const routes = [
-//   {
-//     path: '/',
-//     name: 'home',
-//     component: HomeComponent
-//   },
+   {
+     path: '/',
+     name: 'home',
+     component: Products
+   },
   {
     path: '/login',
     name: 'login',

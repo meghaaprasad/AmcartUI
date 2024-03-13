@@ -1,34 +1,31 @@
 <template>
-    <div class="product-page">
-      <!-- Sidebar for Filters -->
-      <aside class="sidebar">
-        <h2>FILTERS</h2>
-        <section class="filter-section">
-          <h3>CATEGORIES</h3>
-          <!-- Generate categories dynamically -->
-          <div v-for="category in categories" :key="category.name">
-            <input type="checkbox" :id="category.name" :value="category.name">
-            <label :for="category.name">{{ category.name }}</label>
-          </div>
-        </section>
-  
-        <!-- Repeat for other filter types like Brands etc. -->
-      </aside>
-  
-      <!-- Main Content for Products -->
+  <div class="container">
+    <aside class="sidebar">
+      <h2>FILTERS</h2>
+      <section class="filter-section">
+        <h3>Brands</h3>
+        <div v-for="category in categories" :key="category.name" class="category">
+          <input type="checkbox" :id="category.name" v-model="selectedCategories" :value="category.name">
+          <label :for="category.name">{{ category.name }}</label>
+        </div>
+      </section>
+      <section class="filter-section">
+        <h3>Gender</h3>
+        <div v-for="gender in genderFilter" :key="gender.name" class="category">
+          <input type="checkbox" :id="gender.name" v-model="selectedCategories" :value="gender.name">
+          <label :for="gender.name">{{ gender.name }}</label>
+        </div>
+      </section>
+    </aside>
+
+    <main class="main-content">
+      <!-- <div class="banner">
+        <img src="/images/banner.jpg" alt="Featured Promotion">
+      </div> -->
+
       <section class="product-grid">
-        <header>
-          <h1>Men T-Shirts - {{ products.length }} items</h1>
-          <!-- Sort Dropdown -->
-          <select name="sort" id="sort">
-            <option value="recommended">Sort by: Recommended</option>
-            <!-- Add other sort options -->
-          </select>
-        </header>
-  
-        <!-- Products Grid -->
         <div class="products">
-          <article v-for="product in products" :key="product.id" class="product-card" @click="selectProduct(product)">
+          <article v-for="product in filteredProducts" :key="product.id" class="product-card" @click="selectProduct(product)">
             <img :src="`/images/${product.imageUrl}`" :alt="product.name">
             <div class="product-info">
               <h3>{{ product.brand }}</h3>
@@ -47,282 +44,173 @@
           </article>
         </div>
       </section>
-    </div>
-  </template>
-  
-  <script>
+    </main>
+  </div>
+</template>
 
+<script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
       categories: [
-        // ... your categories if needed
+        { name: 'Zara' },
+        { name: 'H and M' },
+        { name: 'Roadster' },
+        { name: 'Mothercare' },
       ],
-      products: [], // Initialize products array to be filled by API data
+      genderFilter: [
+        { name: 'Men' },
+        { name: 'Women' },
+        { name: 'Kids' },
+      ], 
+      products: [],
+      filteredProducts: [],
+      selectedCategories: [],
+      selectedGender: [],
+      sortKey: 'recommended',
     };
   },
   methods: {
-    fetchProductsStatic() {
-    //   axios.get('http://localhost:5001/products')
-    //     .then(response => {
-    //       // Handle the response data from the API
-    //       this.products = response.data;
-    //     })
-    //     .catch(error => {
-    //       // Handle errors here, such as displaying a message to the user
-    //       console.error("There was an error fetching the products: ", error);
-    //     });
-    this.products = [
-  {
-    "id": 1,
-    "name": "Roadster Pure Cotton T-shirt",
-    "brand": "Roadster",
-    "price": {
-      "original": 499,
-      "final": 289,
-      "discountPercentage": 42,
-      "currency": "Rs."
+    async fetchProducts() {
+      try {
+        // Replace with your actual API endpoint
+        const response = await axios.get('http://localhost:5001/api/Products');
+        this.products = response.data;
+        this.filteredProducts = [...this.products];
+      } catch (error) {
+        console.error("There was an error fetching the products:", error);
+      }
     },
-    "rating": {
-      "value": 4.2,
-      "count": 51800
-    },
-    "imageUrl": "2.jpg",
-    "isNew": false
-  },
-  {
-    "id": 2,
-    "name": "H&M Cotton Pure Cotton T-shirt",
-    "brand": "H&M",
-    "price": {
-      "original": 599,
-      "final": 399,
-      "discountPercentage": 33,
-      "currency": "Rs."
-    },
-    "rating": {
-      "value": 4.4,
-      "count": 11200
-    },
-    "imageUrl": "1.jpg",
-    "isNew": false
-  },
-  {
-    "id": 3,
-    "name": "Nautica Men Pure Cotton T-shirt",
-    "brand": "Nautica",
-    "price": {
-      "original": 1299,
-      "final": 454,
-      "discountPercentage": 65,
-      "currency": "Rs."
-    },
-    "rating": {
-      "value": 4.5,
-      "count": 319
-    },
-    "imageUrl": "3.jpg",
-    "isNew": true
-  },
-  {
-    "id": 4,
-    "name": "Roadster Printed Round Neck Pure Cotton T-shirt",
-    "brand": "Roadster",
-    "price": {
-      "original": 999,
-      "final": 332,
-      "discountPercentage": 63,
-      "currency": "Rs."
-    },
-    "rating": {
-      "value": 4.2,
-      "count": 6900
-    },
-    "imageUrl": "4.jpg",
-    "isNew": true
-  },
-  {
-    "id": 1,
-    "name": "Roadster Pure Cotton T-shirt",
-    "brand": "Roadster",
-    "price": {
-      "original": 499,
-      "final": 289,
-      "discountPercentage": 42,
-      "currency": "Rs."
-    },
-    "rating": {
-      "value": 4.2,
-      "count": 51800
-    },
-    "imageUrl": "2.jpg",
-    "isNew": false
-  },
-  {
-    "id": 2,
-    "name": "H&M Cotton Pure Cotton T-shirt",
-    "brand": "H&M",
-    "price": {
-      "original": 599,
-      "final": 399,
-      "discountPercentage": 33,
-      "currency": "Rs."
-    },
-    "rating": {
-      "value": 4.4,
-      "count": 11200
-    },
-    "imageUrl": "1.jpg",
-    "isNew": false
-  },
-  {
-    "id": 3,
-    "name": "Nautica Men Pure Cotton T-shirt",
-    "brand": "Nautica",
-    "price": {
-      "original": 1299,
-      "final": 454,
-      "discountPercentage": 65,
-      "currency": "Rs."
-    },
-    "rating": {
-      "value": 4.5,
-      "count": 319
-    },
-    "imageUrl": "3.jpg",
-    "isNew": true
-  },
-  {
-    "id": 4,
-    "name": "Roadster Printed Round Neck Pure Cotton T-shirt",
-    "brand": "Roadster",
-    "price": {
-      "original": 999,
-      "final": 332,
-      "discountPercentage": 63,
-      "currency": "Rs."
-    },
-    "rating": {
-      "value": 4.2,
-      "count": 6900
-    },
-    "imageUrl": "4.jpg",
-    "isNew": true
-  }
-  // ... add more products as needed
-];
-    },    
-    fetchProducts() {
-      axios.get('http://localhost:5001/api/Products') // Update the URL to match your API endpoint
-        .then(response => {
-          this.products = response.data;
-        })
-        .catch(error => {
-          console.error("There was an error fetching the products: ", error);
-        });
+    filterAndSortProducts() {
+      let tempProducts = [...this.products];
+
+      if (this.selectedCategories.length) {
+        tempProducts = tempProducts.filter(product =>
+          this.selectedCategories.includes(product.category));
+      }
+
+      if (this.sortKey === 'priceLowHigh') {
+        tempProducts.sort((a, b) => a.price.final - b.price.final);
+      } else if (this.sortKey === 'priceHighLow') {
+        tempProducts.sort((a, b) => b.price.final - a.price.final);
+      }
+
+      this.filteredProducts = tempProducts;
     },
     selectProduct(product) {
-      this.selectedProduct = product;
-      // Navigate to a details page or open a details modal
-      // For simplicity, we'll use the router to navigate to a details page if you have one
       this.$router.push({ name: 'ProductDetails', params: { id: product.id } });
     }
   },
+  watch: {
+    selectedCategories: 'filterAndSortProducts',
+    sortKey: 'filterAndSortProducts',
+  },
   mounted() {
-    // When the component is mounted, fetch the products
     this.fetchProducts();
   },
 };
 </script>
 
-  
-  <style scoped>
-.product-page {
+<style scoped>
+.container {
   display: flex;
-  max-width: 1200px; /* Adjust based on your layout */
-  margin: auto; /* Center the page */
+  max-width: 100%;
+  margin-top: 60px; /* adjust for navbar */
 }
 
 .sidebar {
-  flex: 0 0 250px; /* Sidebar width */
+  flex: 0 0 250px;
   padding: 20px;
-  background: #f3f3f3; /* Sidebar background color */
+  background: #f3f3f3;
+  height: 100vh; /* Full height */
+  overflow-y: auto; /* Scrollable if content is long */
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.banner img {
+  width: 100%;
+  display: block; /* Ensures the image takes up the entire width */
+  height: 20%; /* Keeps the image ratio intact */
+  margin-bottom: 20px; /* Space below the banner */
 }
 
 .product-grid {
-  flex-grow: 1; /* Take the remaining space */
-  padding: 20px;
+margin-top: 20px;
 }
 
 .products {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive grid layout */
-  gap: 20px;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+gap: 20px;
 }
 
 .product-card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  background: #fff;
-  text-align: center; /* Center text and content */
+border: 1px solid #ddd;
+padding: 10px;
+background: #fff;
+text-align: center;
+position: relative;
 }
 
 .product-card img {
-  width: 100%;
-  height: auto;
-  margin-bottom: 10px; /* Space between image and product info */
+width: 100%;
+height: auto;
+margin-bottom: 10px;
 }
 
 .product-info {
-  padding: 5px;
+padding: 5px;
 }
 
-.product-info h3 {
-  font-size: 0.9em;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.product-price {
-  margin: 10px 0;
-  font-size: 0.9em;
+.product-info h3, .product-info p {
+font-size: 0.9em;
+color: #333;
+margin: 5px 0;
 }
 
 .product-price .original-price {
-  text-decoration: line-through;
-  margin-right: 5px;
+text-decoration: line-through;
+margin-right: 5px;
 }
 
 .product-price .final-price {
-  font-weight: bold;
+font-weight: bold;
 }
 
 .product-price .discount {
-  color: #d9534f; /* Discount color */
-  font-weight: bold;
+color: #d9534f;
+font-weight: bold;
 }
 
 .product-rating {
-  display: flex;
-  justify-content: center;
-  font-size: 0.8em;
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 0.8em;
 }
 
 .product-rating .rating-value {
-  margin-right: 5px;
+margin-right: 5px;
 }
 
 .new-label {
-  display: inline-block;
-  background: #d9534f; /* New label background color */
-  color: #fff;
-  padding: 2px 5px;
-  position: absolute;
-  top: 10px;
-  right: 10px;
+display: inline-block;
+background: #d9534f;
+color: #fff;
+padding: 2px 5px;
+position: absolute;
+top: 10px;
+right: 10px;
 }
 
-  </style>
-  
+.product-card:hover {
+box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+cursor: pointer;
+}
+</style>
