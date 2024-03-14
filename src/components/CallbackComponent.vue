@@ -20,7 +20,7 @@
         if (code) {
           try {
             // Replace this URL with your actual API endpoint
-            const response = await fetch(`http://localhost:5005/api/auth/callback?code=${code}`);
+            const response = await fetch(`https://gfpizy7vp9.execute-api.us-east-1.amazonaws.com/test/api/Auth/callback?code=${code}`);
             if (response.ok) {
               const data = await response.json();
               store.dispatch('login', { username: data.username, accessToken: data.accessToken });

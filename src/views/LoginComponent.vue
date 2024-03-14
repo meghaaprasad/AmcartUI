@@ -30,7 +30,7 @@
     methods: {
       async login() {
         try {
-          const response = await axios.post('http://localhost:5005/api/Auth/login', this.credentials);
+          const response = await axios.post('https://gfpizy7vp9.execute-api.us-east-1.amazonaws.com/test/api/Auth/login', this.credentials);
           // Assuming the API returns tokens in the response
           const { AccessToken } = response.accessToken;
           console.log(AccessToken);
