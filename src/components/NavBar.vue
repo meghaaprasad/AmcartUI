@@ -51,7 +51,7 @@ export default {
     };
 
     const loginWithCognito = () => {
-      window.location.href = 'http://auth-lb-1617152689.us-east-1.elb.amazonaws.com/api/Auth/login';
+      window.location.href = 'https://gfpizy7vp9.execute-api.us-east-1.amazonaws.com/test/api/Auth/login';
     };
 
     const filterByCategory = (category) => {

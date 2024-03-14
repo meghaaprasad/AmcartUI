@@ -70,7 +70,7 @@ export default {
       const productId = this.$route.params.id;
       this.loading = true;
       this.error = null;
-      axios.get(`http://product-lb-31291866.us-east-1.elb.amazonaws.com/api/Products/${productId}`)
+      axios.get(`https://gfpizy7vp9.execute-api.us-east-1.amazonaws.com/test/api/Products/${productId}`)
         .then(response => {
           this.product = response.data;
           this.loading = false;

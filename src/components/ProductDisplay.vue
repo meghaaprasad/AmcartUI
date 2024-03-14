@@ -76,7 +76,7 @@ export default {
     async fetchProducts() {
       try {
         // Replace with your actual API endpoint
-        const response = await axios.get('http://product-lb-31291866.us-east-1.elb.amazonaws.com/api/Products');
+        const response = await axios.get('https://gfpizy7vp9.execute-api.us-east-1.amazonaws.com/test/api/Products');
         this.products = response.data;
         this.filteredProducts = [...this.products];
       } catch (error) {
