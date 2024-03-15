@@ -6,9 +6,7 @@
       <button class="search-button">🔍</button>
     </div>
     <ul class="nav-links">
-      <li @click="filterByCategory('Men')">MEN</li>
-      <li @click="filterByCategory('Women')">WOMEN</li>
-      <li @click="filterByCategory('Kids')">KIDS</li>
+      <li v-if="isLoggedIn"><router-link to="/addproduct" class="nav-icon-link"> + Add Product</router-link></li>
     </ul>
     <div class="nav-right">
       <ul v-if="isLoggedIn" class="nav-icons">
@@ -140,5 +138,20 @@ export default {
 .profile-icon {
   font-weight: bold;
   cursor: pointer;
+}
+
+.nav-icon-link, .nav-icons a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+  border: 1px solid transparent; 
+  border-radius: 4px; 
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.nav-icon-link:hover, .nav-icons a:hover {
+  text-decoration: none;
+  border-color: #f3f3f3; 
 }
 </style>

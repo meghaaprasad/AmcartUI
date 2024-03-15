@@ -27,14 +27,14 @@
               router.push('/');
             } else {
               console.error('Failed to exchange code for tokens.');
-              router.push('/login');
+              router.push('/');
             }
           } catch (error) {
             console.error('Error handling callback:', error);
-            router.push('/login');
+            router.push('/');
           }
         } else {
-          router.push('/login');
+          router.push('/');
         }
       });
     },

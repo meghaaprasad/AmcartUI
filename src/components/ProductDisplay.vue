@@ -75,7 +75,7 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        // Replace with your actual API endpoint
+        
         const response = await axios.get('https://gfpizy7vp9.execute-api.us-east-1.amazonaws.com/test/api/Products');
         this.products = response.data;
         this.filteredProducts = [...this.products];
@@ -117,15 +117,15 @@ export default {
 .container {
   display: flex;
   max-width: 100%;
-  margin-top: 60px; /* adjust for navbar */
+  margin-top: 60px; 
 }
 
 .sidebar {
   flex: 0 0 250px;
   padding: 20px;
   background: #f3f3f3;
-  height: 100vh; /* Full height */
-  overflow-y: auto; /* Scrollable if content is long */
+  height: 100vh;
+  overflow-y: auto; 
 }
 
 .main-content {
@@ -135,9 +135,9 @@ export default {
 
 .banner img {
   width: 100%;
-  display: block; /* Ensures the image takes up the entire width */
-  height: 20%; /* Keeps the image ratio intact */
-  margin-bottom: 20px; /* Space below the banner */
+  display: block; 
+  height: 20%; 
+  margin-bottom: 20px; 
 }
 
 .product-grid {
