@@ -1,5 +1,8 @@
 <template>
  <div>
+  <!-- <div class="banner">
+        <img src="/images/banner.jpg" alt="Featured Promotion">
+      </div> -->
   <nav-bar></nav-bar>
   <router-view></router-view>
  </div>
@@ -11,8 +14,7 @@ import NavBar from '@/components/NavBar.vue';
 
 export default {
   name: 'App',
-  components: {
-   // Products,
+  components: { 
     NavBar
   }
 }

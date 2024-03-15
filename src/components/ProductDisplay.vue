@@ -5,23 +5,20 @@
       <section class="filter-section">
         <h3>Brands</h3>
         <div v-for="category in categories" :key="category.name" class="category">
-          <input type="checkbox" :id="category.name" v-model="selectedCategories" :value="category.name">
+          <input type="checkbox" :id="category.name" v-model="selectedCategories" :value="category.name" @change="applyFilters">
           <label :for="category.name">{{ category.name }}</label>
         </div>
       </section>
       <section class="filter-section">
         <h3>Gender</h3>
         <div v-for="gender in genderFilter" :key="gender.name" class="category">
-          <input type="checkbox" :id="gender.name" v-model="selectedCategories" :value="gender.name">
+          <input type="checkbox" :id="gender.name" v-model="selectedGenders" :value="gender.name" @change="applyFilters">
           <label :for="gender.name">{{ gender.name }}</label>
         </div>
       </section>
     </aside>
 
     <main class="main-content">
-      <!-- <div class="banner">
-        <img src="/images/banner.jpg" alt="Featured Promotion">
-      </div> -->
 
       <section class="product-grid">
         <div class="products">
@@ -68,11 +65,30 @@ export default {
       products: [],
       filteredProducts: [],
       selectedCategories: [],
-      selectedGender: [],
+      selectedGenders: [],
       sortKey: 'recommended',
     };
   },
   methods: {
+    applyFilters() {
+      let results = this.products;
+
+      // Filter by selected brands if any
+      if (this.selectedCategories.length > 0) {
+        results = results.filter(product =>
+          this.selectedCategories.includes(product.brand)
+        );
+      }
+
+      // Filter by selected genders /category if any
+      if (this.selectedGenders.length > 0) {
+        results = results.filter(product =>
+          this.selectedGenders.some(gender => product.category === gender)
+        );
+      }
+
+      this.filteredProducts = results;
+    },
     async fetchProducts() {
       try {
         
