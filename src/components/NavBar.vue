@@ -2,8 +2,10 @@
   <nav class="navbar">
     <router-link to="/" class="logo">AmCart</router-link>
     <div class="search-container">
-      <input type="text" placeholder="Search for products, brands and more" class="search-input" />
-      <button class="search-button">🔍</button>
+      <input type="text" placeholder="Search for products, brands and more" class="search-input"
+      v-model="searchQuery" @keyup.enter="performSearch" />
+      <button class="search-button" @click="performSearch">🔍</button>
+      <button v-if="searchQuery" class="clear-button" @click="clearSearch">✖</button>
     </div>
     <ul class="nav-links">
       <li v-if="isLoggedIn"><router-link to="/addproduct" class="nav-icon-link"> + Add Product</router-link></li>
@@ -42,7 +44,7 @@ export default {
     const router = useRouter();
     const username = computed(() => store.getters.username);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
-
+    const searchQuery = ref('');
     const logout = () => {
       store.dispatch('logout');
       router.push('/');
@@ -56,7 +58,18 @@ export default {
       router.push({ name: 'Products', query: { category: category } });
     };
 
-    return { showUsername, username, isLoggedIn, logout, loginWithCognito, filterByCategory };
+    const performSearch = () => {
+      if (searchQuery.value.trim()) {
+        router.push({ name: 'home', query: { search: searchQuery.value } }).catch((err) => {console.log(err)});
+      }
+    };
+
+    const clearSearch = () => {
+      searchQuery.value = '';
+      router.push({ name: 'home' });
+    };
+
+    return { showUsername, username, isLoggedIn,searchQuery, logout, loginWithCognito, filterByCategory, performSearch,clearSearch };
   },
 };
 </script>

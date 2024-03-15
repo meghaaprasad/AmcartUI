@@ -101,12 +101,32 @@ export default {
     },
     selectProduct(product) {
       this.$router.push({ name: 'ProductDetails', params: { id: product.id } });
+    },
+    async searchProducts() {
+    const searchQuery = this.$route.query.search;
+    try {     
+      const response = await axios.get(`https://gfpizy7vp9.execute-api.us-east-1.amazonaws.com/test/api/Search?searchTerm=${searchQuery}`);    
+      this.filteredProducts = response.data;
+    } catch (error) {
+      console.error("There was an error fetching the filtered products: ", error);
     }
+  },
   },
   watch: {
     selectedCategories: 'filterAndSortProducts',
     sortKey: 'filterAndSortProducts',
+  
+  '$route.query.search': {
+    immediate: true,
+    handler() {
+      if (this.$route.query.search) {
+        this.searchProducts();
+      } else {
+        this.fetchProducts();
+      }
+    },
   },
+},
   mounted() {
     this.fetchProducts();
   },
