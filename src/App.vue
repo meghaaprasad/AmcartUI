@@ -3,7 +3,6 @@
   <!-- <div class="banner">
         <img src="/images/banner.jpg" alt="Featured Promotion">
       </div> -->
-      Checking commit show time
   <nav-bar></nav-bar>
   <router-view></router-view>
  </div>
